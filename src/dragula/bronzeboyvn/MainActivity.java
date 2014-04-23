@@ -73,6 +73,8 @@ public class MainActivity extends Activity {
     					}
     					output("Executing...");
     					String output = exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS + " "+COMMAND_IN+ " "+COMMAND_OUT);
+    					output += exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS + " " +COMMAND_OUT_MULTIPLEX);
+    					output += exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS + " " +COMMAND_ARGS_OGG);
     					output(output);
             		}
             	});
