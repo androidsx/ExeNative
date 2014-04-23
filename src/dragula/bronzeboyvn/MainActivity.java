@@ -28,9 +28,13 @@ public class MainActivity extends Activity {
 	private static final String SONG_NAME = "testsound.raw";
 	private static final String COMMAND_NAME = "ffmpeg";
 	private static final String COMMAND_ARGS = "-f s16le -ar 22.05k -ac 1 -i";
+	private static final String COMMAND_ARGS_MULTIPLEX = "-i output.wav -ac 2 output-2channels.wav";
+	private static final String COMMAND_ARGS_OGG = "-i output-2channels.wav -b 64k -acodec libvorbis";
 	private static final String SDCARD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
 	private static final String COMMAND_IN = SDCARD_PATH + "/" +SONG_NAME;
 	private static final String COMMAND_OUT = SDCARD_PATH + "/output.wav";
+	private static final String COMMAND_OUT_MULTIPLEX = SDCARD_PATH + "/output2-channels.wav";
+	private static final String COMMAND_OUT_OGG = SDCARD_PATH + "/output.ogg";
 	
 	private TextView outputText;
     private Button lsButton;
