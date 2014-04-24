@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 	private static final String SONG_WAV_MULTIPLEX = "multiplex.wav";
 	private static final String SONG_OGG = "testsound.ogg";
 		
-	private static final String COMMAND_IN = SDCARD_PATH + "/" + SONG_RAW;
+	private static final String COMMAND_IN_RAW = SDCARD_PATH + "/" + SONG_RAW;
 	
 	private static final String COMMAND_OUT_WAV = SDCARD_PATH + "/" + SONG_WAV;
 	private static final String COMMAND_OUT_MULTIPLEX = SDCARD_PATH + "/" + SONG_WAV_MULTIPLEX;
@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
             }
         });
         commandText = (TextView)findViewById(R.id.helloText);
-        commandText.setText("Your binary:" + COMMAND_NAME + " " + COMMAND_ARGS_WAV + " " + COMMAND_IN + " " + COMMAND_OUT_WAV);
+        commandText.setText("Your binary:" + COMMAND_NAME + " " + COMMAND_ARGS_WAV + " " + COMMAND_IN_RAW + " " + COMMAND_OUT_WAV);
         commandButton = (Button)findViewById(R.id.helloButton);
         commandButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -73,19 +73,19 @@ public class MainActivity extends Activity {
             			try {
     						saveRawToFile(COMMAND_BINARY,COMMAND_NAME, LOCAL);
     						exec("/system/bin/chmod 744 " + LOCAL + COMMAND_NAME);
-    						exec("/system/bin/chmod 777 " + LOCAL + COMMAND_IN);
+    						exec("/system/bin/chmod 777 " + LOCAL + COMMAND_IN_RAW);
     						saveRawToFile(SONG, SONG_RAW, SDCARD_PATH);
     					} catch (IOException e) {
     						e.printStackTrace();
     					}
     					output("Executing...");
     					
-    					exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS_WAV + " " + COMMAND_IN + " " +COMMAND_OUT_WAV);
+    					exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS_WAV + " " + COMMAND_IN_RAW + " " +COMMAND_OUT_WAV);
     					exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS_MULTIPLEX + " " + COMMAND_OUT_MULTIPLEX);
     					exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS_OGG + " " + COMMAND_OUT_OGG);					
     					output("Convertion succesfull");
     					
-    					deleteFile(COMMAND_IN);
+    					deleteFile(COMMAND_IN_RAW);
     					//deleteFile(COMMAND_OUT_MULTIPLEX);
     					//deleteFile(COMMAND_OUT_WAV);				
     					output("Delete unused files succesfull");
