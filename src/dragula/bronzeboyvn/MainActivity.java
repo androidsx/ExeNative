@@ -25,16 +25,23 @@ public class MainActivity extends Activity {
 	
 	private static final int SONG = R.raw.testsound;
 	private static final int COMMAND_BINARY = R.raw.ffmpeg;
-	private static final String SONG_NAME = "testsound.raw";
 	private static final String COMMAND_NAME = "ffmpeg";
-	private static final String COMMAND_ARGS = "-f s16le -ar 22.05k -ac 1 -i";
-	private static final String COMMAND_ARGS_MULTIPLEX = "-i output.wav -ac 2 output-2channels.wav";
-	private static final String COMMAND_ARGS_OGG = "-i output-2channels.wav -b 64k -acodec libvorbis";
 	private static final String SDCARD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
-	private static final String COMMAND_IN = SDCARD_PATH + "/" +SONG_NAME;
-	private static final String COMMAND_OUT = SDCARD_PATH + "/output.wav";
-	private static final String COMMAND_OUT_MULTIPLEX = SDCARD_PATH + "/output2-channels.wav";
-	private static final String COMMAND_OUT_OGG = SDCARD_PATH + "/output.ogg";
+	
+	private static final String SONG_RAW = "testsound.raw";
+	private static final String SONG_WAV = "testsound.wav";
+	private static final String SONG_WAV_MULTIPLEX = "multiplex.wav";
+	private static final String SONG_OGG = "testsound.ogg";
+		
+	private static final String COMMAND_IN = SDCARD_PATH + "/" + SONG_RAW;
+	
+	private static final String COMMAND_OUT_WAV = SDCARD_PATH + "/" + SONG_WAV;
+	private static final String COMMAND_OUT_MULTIPLEX = SDCARD_PATH + "/" + SONG_WAV_MULTIPLEX;
+	private static final String COMMAND_OUT_OGG = SDCARD_PATH + "/" + SONG_OGG;
+	
+	private static final String COMMAND_ARGS_WAV = "-f s16le -ar 22.05k -ac 1 -i";
+	private static final String COMMAND_ARGS_MULTIPLEX = "-i " + COMMAND_OUT_WAV +" -ac 2";
+	private static final String COMMAND_ARGS_OGG = "-i " + COMMAND_OUT_MULTIPLEX + " -b 64k -acodec libvorbis";
 	
 	private TextView outputText;
     private Button lsButton;
@@ -56,7 +63,7 @@ public class MainActivity extends Activity {
             }
         });
         commandText = (TextView)findViewById(R.id.helloText);
-        commandText.setText("Your binary:" + COMMAND_NAME + " " + COMMAND_ARGS + " " + COMMAND_IN + " " + COMMAND_OUT);
+        commandText.setText("Your binary:" + COMMAND_NAME + " " + COMMAND_ARGS_WAV + " " + COMMAND_IN + " " + COMMAND_OUT_WAV);
         commandButton = (Button)findViewById(R.id.helloButton);
         commandButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -67,21 +74,29 @@ public class MainActivity extends Activity {
     						saveRawToFile(COMMAND_BINARY,COMMAND_NAME, LOCAL);
     						exec("/system/bin/chmod 744 " + LOCAL + COMMAND_NAME);
     						exec("/system/bin/chmod 777 " + LOCAL + COMMAND_IN);
-    						saveRawToFile(SONG, SONG_NAME, SDCARD_PATH);
+    						saveRawToFile(SONG, SONG_RAW, SDCARD_PATH);
     					} catch (IOException e) {
     						e.printStackTrace();
     					}
     					output("Executing...");
-    					String output = exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS + " "+COMMAND_IN+ " "+COMMAND_OUT);
-    					output += exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS + " " +COMMAND_OUT_MULTIPLEX);
-    					output += exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS + " " +COMMAND_ARGS_OGG);
-    					output(output);
+    					
+    					exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS_WAV + " " + COMMAND_IN + " " +COMMAND_OUT_WAV);
+    					exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS_MULTIPLEX + " " + COMMAND_OUT_MULTIPLEX);
+    					exec(LOCAL + COMMAND_NAME + " " + COMMAND_ARGS_OGG + " " + COMMAND_OUT_OGG);					
+    					output("Convertion succesfull");
+    					
+    					deleteFile(COMMAND_IN);
+    					//deleteFile(COMMAND_OUT_MULTIPLEX);
+    					//deleteFile(COMMAND_OUT_WAV);				
+    					output("Delete unused files succesfull");
             		}
             	});
             	thread.start();
             }
     	});
     }
+    
+
     
     private void saveRawToFile(int convert, String name, String path) throws IOException {
         File file = new File(path, name);
@@ -118,6 +133,12 @@ public class MainActivity extends Activity {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+	
+    public boolean deleteFile(String pathFile){
+    	File file = new File(pathFile);
+    	boolean deleted = file.delete();
+    	return deleted;
     }
 	
 
